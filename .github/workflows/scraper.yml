@@ -28,8 +28,13 @@
             HEADLESS: "true"
           run: python searchdatahouse.py
 
-        - name: Guardar el Excel
+        - name: Guardar resultados (Excel + diagnóstico)
+          if: always()
           uses: actions/upload-artifact@v4
           with:
-            name: resultado-excel
-            path: '*.xlsx'
+            name: resultado
+            path: |
+              *.xlsx
+              *.html
+              *.json
+              *.png
