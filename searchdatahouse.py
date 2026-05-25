@@ -16,6 +16,7 @@ Edit MAX_LISTINGS to control how many listings to collect.
 """
 
 import json
+import os
 import random
 import re
 import time
@@ -26,10 +27,8 @@ import pandas as pd
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment
@@ -45,8 +44,9 @@ LISTING_URL = (
 )
 
 CITY = "las_condes"
-MAX_LISTINGS = 100          # <-- change this
-HEADLESS = False
+MAX_LISTINGS = 300          # prueba intermedia; sube a 100000 para traer "todas"
+# Local: ventana visible. En GitHub Actions se pone HEADLESS=true (ver env del workflow)
+HEADLESS = os.environ.get("HEADLESS", "false").lower() == "true"
 CHECKPOINT_EVERY_N = 5
 
 USER_AGENT = (
@@ -334,14 +334,14 @@ def main():
     chrome_options = Options()
     if HEADLESS:
         chrome_options.add_argument("--headless=new")
+        chrome_options.add_argument("--no-sandbox")
+        chrome_options.add_argument("--disable-dev-shm-usage")
+        chrome_options.add_argument("--window-size=1920,1080")
     chrome_options.add_argument("--start-maximized")
     chrome_options.add_argument("--disable-blink-features=AutomationControlled")
     chrome_options.add_argument(f"--user-agent={USER_AGENT}")
 
-    driver = webdriver.Chrome(
-        service=Service(ChromeDriverManager().install()),
-        options=chrome_options
-    )
+    driver = webdriver.Chrome(options=chrome_options)
 
     try:
         while len(rows) < MAX_LISTINGS and current_url:
