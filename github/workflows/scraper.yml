@@ -1,9 +1,9 @@
   name: Scraper diario
-  
+
   on:
     schedule:
-      - cron: '0 12 * * *'   # 12:00 UTC = 08:00 en Chile
-    workflow_dispatch:        # botón para correrlo manualmente
+      - cron: '0 12 * * *'
+    workflow_dispatch:
 
   jobs:
     scrape:
@@ -15,9 +15,10 @@
           with:
             python-version: '3.12'
 
-        - name: Instalar Chrome y pantalla virtual (xvfb)
-          run: sudo apt-get update && sudo apt-get install -y xvfb
-  google-chrome-stable
+        - name: Instalar Chrome y pantalla virtual
+          run: |
+            sudo apt-get update
+            sudo apt-get install -y xvfb google-chrome-stable
 
         - name: Instalar dependencias
           run: pip install -r requirements.txt
@@ -30,4 +31,3 @@
           with:
             name: resultado-excel
             path: '*.xlsx'
-
