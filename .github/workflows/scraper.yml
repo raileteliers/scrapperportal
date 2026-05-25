@@ -15,16 +15,18 @@
           with:
             python-version: '3.12'
 
-        - name: Instalar Chrome y pantalla virtual
+        - name: Instalar Google Chrome
           run: |
             sudo apt-get update
-            sudo apt-get install -y xvfb google-chrome-stable
+            sudo apt-get install -y google-chrome-stable
 
         - name: Instalar dependencias
           run: pip install -r requirements.txt
-  
+
         - name: Correr scraper
-          run: xvfb-run -a python searchdatahouse.py
+          env:
+            HEADLESS: "true"
+          run: python searchdatahouse.py
 
         - name: Guardar el Excel
           uses: actions/upload-artifact@v4
